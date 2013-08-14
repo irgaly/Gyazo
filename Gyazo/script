@@ -1,30 +1,22 @@
 #!/usr/bin/env ruby
 
+# setting
+album = 'gyazogle'
+maxSize = 2048
+
 require 'net/http'
-
-# get id
-user = IO.popen("whoami", "r+").gets.chomp
-program = ARGV[0].to_s
-idfile = "/Users/#{user}/Library/Gyazo/id"
-old_idfile = File.dirname(program) + "/gyazo.app/Contents/Resources/id"
-
-id = ''
-if File.exist?(idfile) then
-  id = File.read(idfile).chomp
-elsif File.exist?(old_idfile) then
-  id = File.read(old_idfile).chomp
-end
+require 'fileutils'
 
 # capture png file
-tmpfile = "/tmp/image_upload#{$$}.png"
+tmpfile = "/tmp/image_#{Time.new.strftime("%Y%m%d%H%M%S")}.png"
 imagefile = ARGV[1]
 
 if imagefile && File.exist?(imagefile) then
-  system "sips -s format png \"#{imagefile}\" --out \"#{tmpfile}\""
+  FileUtils.cp(imagefile, tmpfile)
 else
   system "screencapture -i \"#{tmpfile}\""
   if File.exist?(tmpfile) then
-    system "sips -d profile --deleteColorManagementProperties \"#{tmpfile}\""  
+    system "sips -d profile --deleteColorManagementProperties \"#{tmpfile}\""
     dpiWidth    = `sips -g dpiWidth "#{tmpfile}" | awk '/:/ {print $2}'`
     dpiHeight   = `sips -g dpiHeight "#{tmpfile}" | awk '/:/ {print $2}'`
     pixelWidth  = `sips -g pixelWidth "#{tmpfile}" | awk '/:/ {print $2}'`
@@ -32,7 +24,7 @@ else
     if (dpiWidth.to_f > 72.0 and dpiHeight.to_f > 72.0) then
         width  =  pixelWidth.to_f * 72.0 / dpiWidth.to_f
         height =  pixelHeight.to_f* 72.0 / dpiHeight.to_f
-        system "sips -s dpiWidth 72 -s dpiHeight 72 -z #{height} #{width} \"#{tmpfile}\""
+        system "sips -s dpiWidth 72 -s dpiHeight 72 -z #{height} -s formatOptions best #{width} \"#{tmpfile}\""
     end
   end
 end
@@ -41,55 +33,26 @@ if !File.exist?(tmpfile) then
   exit
 end
 
-imagedata = File.read(tmpfile)
-File.delete(tmpfile)
+# resize
+pixelWidth  = `sips -g pixelWidth "#{tmpfile}" | awk '/:/ {print $2}'`.to_i
+pixelHeight = `sips -g pixelHeight "#{tmpfile}" | awk '/:/ {print $2}'`.to_i
+if (maxSize < pixelWidth or maxSize < pixelHeight) then
+  system "sips -Z #{maxSize} -s formatOptions best \"#{tmpfile}\""
+end
 
 # upload
-boundary = '----BOUNDARYBOUNDARY----'
+`google picasa post --title '#{album}' #{tmpfile}`
+url = `google picasa list --fields url-direct --title '#{album}' | grep '#{File.basename(tmpfile)}'`.chomp
+#url = `google picasa list --fields url-direct --title '#{album}' --query '#{File.basename(tmpfile)}'`.chomp
 
-HOST = 'gyazo.com'
-CGI = '/upload.cgi'
-UA   = 'Gyazo/1.0.2'
+# get original size url
+url = url.sub(File.basename(tmpfile), "s#{maxSize}/#{File.basename(tmpfile)}")
 
-data = <<EOF
---#{boundary}\r
-content-disposition: form-data; name="id"\r
-\r
-#{id}\r
---#{boundary}\r
-content-disposition: form-data; name="imagedata"; filename="gyazo.com"\r
-\r
-#{imagedata}\r
---#{boundary}--\r
-EOF
-
-header ={
-  'Content-Length' => data.length.to_s,
-  'Content-type' => "multipart/form-data; boundary=#{boundary}",
-  'User-Agent' => UA
+IO.popen("pbcopy","r+"){|io|
+  io.write url
+  io.close
 }
+system "open #{url}"
 
-Net::HTTP.start(HOST,80){|http|
-  res = http.post(CGI,data,header)
-  url = res.response.body
-  IO.popen("pbcopy","r+"){|io|
-    io.write url
-    io.close
-  }
-  system "open #{url}"
+File.delete(tmpfile)
 
-  # save id
-  newid = res.response['X-Gyazo-Id']
-  if newid and newid != "" then
-    if !File.exist?(File.dirname(idfile)) then
-      Dir.mkdir(File.dirname(idfile))
-    end
-    if File.exist?(idfile) then
-      File.rename(idfile, idfile+Time.new.strftime("_%Y%m%d%H%M%S.bak"))
-    end
-    File.open(idfile,"w").print(newid)
-    if File.exist?(old_idfile) then
-      File.delete(old_idfile)
-    end
-  end
-}
