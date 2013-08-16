@@ -41,9 +41,9 @@ if (maxSize < pixelWidth or maxSize < pixelHeight) then
 end
 
 # upload
-`google picasa post --title '#{album}' #{tmpfile}`
-url = `google picasa list --fields url-direct --title '#{album}' | grep '#{File.basename(tmpfile)}'`.chomp
-#url = `google picasa list --fields url-direct --title '#{album}' --query '#{File.basename(tmpfile)}'`.chomp
+`/usr/local/bin/google picasa post --title '#{album}' #{tmpfile}`
+url = `/usr/local/bin/google picasa list --fields url-direct --title '#{album}' | grep '#{File.basename(tmpfile)}'`.chomp
+#url = `/usr/local/bin/google picasa list --fields url-direct --title '#{album}' --query '#{File.basename(tmpfile)}'`.chomp
 
 # get original size url
 url = url.sub(File.basename(tmpfile), "s#{maxSize}/#{File.basename(tmpfile)}")
