@@ -89,8 +89,7 @@
 				10F3CA3D1499F92A00F62513 /* MainMenu.xib */,
 				10F3CA2F1499F92900F62513 /* Supporting Files */,
 			);
-			name = Gyazogle;
-			path = Gyazo;
+			path = Gyazogle;
 			sourceTree = "<group>";
 		};
 		10F3CA2F1499F92900F62513 /* Supporting Files */ = {
@@ -252,8 +251,8 @@
 				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Gyazo/Gyazogle-Prefix.pch";
-				INFOPLIST_FILE = "Gyazo/Gyazogle-Info.plist";
+				GCC_PREFIX_HEADER = "Gyazogle/Gyazogle-Prefix.pch";
+				INFOPLIST_FILE = "Gyazogle/Gyazogle-Info.plist";
 				PRODUCT_NAME = Gyazogle;
 				WRAPPER_EXTENSION = app;
 			};
@@ -265,8 +264,8 @@
 				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Gyazo/Gyazogle-Prefix.pch";
-				INFOPLIST_FILE = "Gyazo/Gyazogle-Info.plist";
+				GCC_PREFIX_HEADER = "Gyazogle/Gyazogle-Prefix.pch";
+				INFOPLIST_FILE = "Gyazogle/Gyazogle-Info.plist";
 				PRODUCT_NAME = Gyazogle;
 				WRAPPER_EXTENSION = app;
 			};
