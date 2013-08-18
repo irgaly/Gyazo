@@ -10,7 +10,13 @@
 
 @implementation AppDelegate
 
-int callRubyScript(NSString * filename) { 
+int callRubyScript(NSString * filename) {
+    // Read Settings
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults registerDefaults:@{
+       @"ruby-path" : @"/usr/bin/ruby",
+       @"googlecl-path" : @"/usr/local/bin/google",
+       }];
     
     // Call Ruby script
     NSTask *             task = [ [ NSTask alloc ] init ]; 
@@ -30,13 +36,9 @@ int callRubyScript(NSString * filename) {
     
     
     // Execute 
-    [ task setLaunchPath           : @"/usr/bin/ruby" ];
+    [ task setLaunchPath           : [defaults stringForKey:@"ruby-path"]];
     [ task setCurrentDirectoryPath : curPath ];
-    if (filename == nil){
-        [ task setArguments:[NSArray arrayWithObjects:scrPath,scrPath,nil ] ];
-    }else{
-        [ task setArguments:[NSArray arrayWithObjects:scrPath,scrPath,filename,nil ] ];
-    }
+    [ task setArguments:[NSArray arrayWithObjects:scrPath,[defaults stringForKey:@"googlecl-path"],filename,nil ] ];
     [ task launch ];
     [ task waitUntilExit ];
     
