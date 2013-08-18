@@ -16,7 +16,9 @@ int callRubyScript(NSString * filename) {
     [defaults registerDefaults:@{
        @"ruby-path" : @"/usr/bin/ruby",
        @"googlecl-path" : @"/usr/local/bin/google",
-       }];
+       @"album" : @"gyazogle",
+       @"max-size" : @"2048",
+     }];
     
     // Call Ruby script
     NSTask *             task = [ [ NSTask alloc ] init ]; 
@@ -38,7 +40,11 @@ int callRubyScript(NSString * filename) {
     // Execute 
     [ task setLaunchPath           : [defaults stringForKey:@"ruby-path"]];
     [ task setCurrentDirectoryPath : curPath ];
-    [ task setArguments:[NSArray arrayWithObjects:scrPath,[defaults stringForKey:@"googlecl-path"],filename,nil ] ];
+    [ task setArguments:[NSArray arrayWithObjects:scrPath,
+                         [defaults stringForKey:@"googlecl-path"],
+                         [defaults stringForKey:@"album"],
+                         [defaults stringForKey:@"max-size"],
+                         filename,nil ] ];
     [ task launch ];
     [ task waitUntilExit ];
     

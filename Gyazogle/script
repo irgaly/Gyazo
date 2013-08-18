@@ -1,16 +1,16 @@
 #!/usr/bin/env ruby
 
 # setting
-album = 'gyazogle'
-maxSize = 2048
 googlecl = ARGV[0]
+album = ARGV[1]
+maxSize = ARGV[2]
 
 require 'net/http'
 require 'fileutils'
 
 # capture png file
 tmpfile = "/tmp/image_#{Time.new.strftime("%Y%m%d%H%M%S")}.png"
-imagefile = ARGV[1]
+imagefile = ARGV[3]
 
 if imagefile && File.exist?(imagefile) then
   FileUtils.cp(imagefile, tmpfile)
@@ -37,8 +37,12 @@ end
 # resize
 pixelWidth  = `sips -g pixelWidth "#{tmpfile}" | awk '/:/ {print $2}'`.to_i
 pixelHeight = `sips -g pixelHeight "#{tmpfile}" | awk '/:/ {print $2}'`.to_i
-if (maxSize < pixelWidth or maxSize < pixelHeight) then
-  system "sips -Z #{maxSize} -s formatOptions best \"#{tmpfile}\""
+if (0 < maxSize) then
+  if (maxSize < pixelWidth or maxSize < pixelHeight) then
+    system "sips -Z #{maxSize} -s formatOptions best \"#{tmpfile}\""
+  end
+else
+  maxSize = [pixelWidth, pixelHeight].max;
 end
 
 # upload
