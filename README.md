@@ -44,7 +44,7 @@ Gyazogle は ruby と googlecl コマンドが必要です。
   <key>album</key>
   <string>gyazogle</string>
   <key>max-size</key>
-  <string>2048</string>
+  <integer>2048</integer>
 </dict>
 </plist>
 ```
@@ -52,5 +52,5 @@ Gyazogle は ruby と googlecl コマンドが必要です。
 * ruby-path : ruby 本体のパス。デフォルトは /usr/bin/ruby。
 * googlecl-path : google コマンドのパス。デフォルトは /usr/local/bin/google。
 * album : アップロード先のアルバム名。デフォルトは gyazogle。
-* max-size : スクリーンショットの長辺の最大サイズ。これより大きな画像は比率を維持したまま長辺が max-size となるようにリサイズされてからアップロードされる。デフォルトは2048。
+* max-size : スクリーンショットの長辺の最大サイズ。これより大きな画像は比率を維持したまま長辺が max-size となるようにリサイズされてからアップロードされます。デフォルトは2048。0 を指定すると自動リサイズ処理は無効化され、そのままの画像サイズでアップロードされます。
 
