@@ -17,7 +17,7 @@ int callRubyScript(NSString * filename) {
        @"ruby-path" : @"/usr/bin/ruby",
        @"googlecl-path" : @"/usr/local/bin/google",
        @"album" : @"gyazogle",
-       @"max-size" : @"2048",
+       @"max-size" : @2048,
      }];
     
     // Call Ruby script
@@ -43,7 +43,7 @@ int callRubyScript(NSString * filename) {
     [ task setArguments:[NSArray arrayWithObjects:scrPath,
                          [defaults stringForKey:@"googlecl-path"],
                          [defaults stringForKey:@"album"],
-                         [defaults stringForKey:@"max-size"],
+                         [NSString stringWithFormat:@"%ld", [defaults integerForKey:@"max-size"]],
                          filename,nil ] ];
     [ task launch ];
     [ task waitUntilExit ];
