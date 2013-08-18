@@ -3,7 +3,7 @@
 # setting
 googlecl = ARGV[0]
 album = ARGV[1]
-maxSize = ARGV[2]
+maxSize = ARGV[2].to_i
 
 require 'net/http'
 require 'fileutils'
